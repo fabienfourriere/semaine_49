@@ -1,0 +1,55 @@
+Exercice 1 : base hotel
+
+1.Afficher la liste des hôtels avec leur station.
+
+CREATE VIEW v_hotel_station
+AS
+SELECT hot_nom, sta_nom FROM hotel
+JOIN station ON hotel.hot_sta_id = station.sta_id
+
+2.Afficher la liste des chambres et leur hôtel
+
+CREATE VIEW v_hotel_chambre
+AS
+SELECT cha_numero, hot_nom FROM chambre
+JOIN hotel ON chambre.cha_hot_id = hotel.hot_id
+
+3.Afficher la liste des réservations avec le nom des clients
+
+CREATE VIEW v_reservation_client
+AS
+SELECT res_date, cli_nom FROM reservation
+JOIN client ON reservation.res_cli_id = client.cli_id
+
+4.Afficher la liste des chambres avec le nom de l'hôtel et le nom de la station
+
+CREATE VIEW v_chambre_hotel_station
+AS
+SELECT cha_numero, hot_nom, sta_nom FROM chambre
+JOIN hotel ON chambre.cha_hot_id = hotel.hot_id
+JOIN station ON hotel.hot_sta_id = station.sta_id
+
+5.Afficher les réservations avec le nom du client et le nom de l'hôtel
+
+CREATE VIEW reservation_client_hotel
+AS
+SELECT res_date, cli_nom, hot_nom FROM reservation
+JOIN client ON reservation.res_cli_id = client.cli_id
+JOIN chambre ON reservation.res_cha_id = chambre.cha_id
+JOIN hotel ON chambre.cha_hot_id = hotel.hot_id
+
+Exercice 2 : base gescom
+
+1.v_Details
+
+CREATE VIEW v_Details
+AS
+SELECT ode_pro_id, SUM(ode_quantity) AS 'QteTot', SUM(ode_unit_price) AS 'PrixTot' FROM orders_details
+GROUP BY ode_pro_id ASC
+
+2.v_Ventes_Zoom
+
+CREATE VIEW v_Ventes_Zoom
+AS
+SELECT * FROM orders_details
+WHERE ode_pro_id = 41

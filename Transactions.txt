@@ -1,0 +1,9 @@
+START TRANSACTION;
+SELECT nomfou FROM fournis WHERE numfou = 120;    
+UPDATE fournis SET nomfou = 'GROSBRIGAND' WHERE numfou = 120;
+SELECT nomfou FROM fournis WHERE numfou = 120;
+
+On en conclus que la transaction fonctionne mais n'est pas validée définitivement.
+Les données sont par conséquent modifiables par d'autres utilisateurs.
+La transaction n'est donc pas terminée, elle le sera définitivement avec une instruction COMMIT; en fin de transaction.
+Elle peut etre annulée avec une instruction ROLLBACK; à la fin.

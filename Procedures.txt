@@ -1,0 +1,50 @@
+Exercice 1 : création d'une procédure stockée sans paramètre
+
+DELIMITER |
+
+CREATE PROCEDURE Lst_fournis()
+BEGIN
+    SELECT numfou FROM entcom
+    GROUP BY numfou;
+END |
+
+DELIMITER ;
+
+
+SHOW CREATE PROCEDURE Lst_fournis;
+
+Exercice 2 : création d'une procédure stockée avec un paramètre en entrée
+
+DELIMITER |
+
+CREATE PROCEDURE Lst_Commandes(IN p_obscom VARCHAR(50))
+
+BEGIN
+SELECT numcom FROM entcom
+WHERE obscom = p_obscom;
+END |
+
+DELIMITER ;
+
+Exercice 3 : création d'une procédure stockée avec plusieurs paramètres
+
+DELIMITER |
+
+CREATE PROCEDURE CA_Fournisseur(
+    IN p_numfou int(11),   
+    IN p_datcom DATE
+)
+
+BEGIN
+
+DECLARE v_ca int(11);
+SET v_ca = SUM(qtecde*priuni*1.2);
+
+INSERT INTO fournis(numfou) VALUES (p_numfou),
+INSERT INTO entcom(SUBSTRING(datcom,1,2,3,4)) VALUES (p_datcom),
+INSERT INTO ligcom(SUM(qtecde*priuni*1.2)) VALUES (v_ca);
+
+END |
+
+DELIMITER ;
+

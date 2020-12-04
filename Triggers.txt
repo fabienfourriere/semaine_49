@@ -1,0 +1,55 @@
+Phase 1
+
+CREATE TRIGGER maj_total 
+AFTER INSERT ON lignedecommande
+FOR EACH ROW
+BEGIN
+    DECLARE id_c INT;
+    DECLARE tot DOUBLE;
+    SET id_c = NEW.id_commande; -- nous captons le numéro de commande concerné
+    SET tot = (SELECT sum(prix*quantite) FROM lignedecommande WHERE id_commande=id_c); -- on recalcul le total
+    UPDATE commande SET total=tot WHERE id=id_c; -- on stock le total dans la table commande
+END;
+
+2.Ce trigger ne fonctionne que lorsque l'on ajoute des produits, les modifications ou suppressions ne permettent pas de recalculer le total. Comment pourrait-on faire ?
+
+En rajoutant les instructions :
+AFTER UPDATE ON lignedecommande
+AFTER DELETE ON lignedecommande
+
+3.Un champ remise était prévu dans la table commande. Comment pourrait-on le prendre en compte ?
+
+En joignant la remise à la table lignedecommande et en modifiant la ligne permettant de recalculer le total par :
+
+    SET tot = (SELECT sum((prix*quantite) - remise) FROM lignedecommande WHERE id_commande=id_c);
+
+Phase 2
+
+CREATE TABLE commander_articles
+(
+    codart INT NOT NULL PRIMARY KEY,
+    qte INT,
+    date_ DATE
+);
+
+CREATE TRIGGER after_products_update
+AFTER UPDATE ON products
+FOR EACH ROW
+ BEGIN
+ INSERT INTO commander_articles (codart, qte, date_)
+ SELECT pro_id, (pro_stock_alert - pro_stock), CURRENT_DATE() FROM products
+ WHERE pro_stock < pro_stock_alert;
+END//
+ (Délimiteur : //)
+
+UPDATE products
+SET pro_stock = 6
+WHERE pro_id = 8
+
+UPDATE products
+SET pro_stock = 4
+WHERE pro_id = 8
+
+UPDATE products
+SET pro_stock = 3
+WHERE pro_id = 8
